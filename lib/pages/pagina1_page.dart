@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:estados/services/usuario_service.dart';
+
+import 'package:estados/models/usuario.dart';
+
 class Pagina1Page extends StatelessWidget {
   const Pagina1Page({Key? key}) : super(key: key);
 
@@ -9,7 +13,20 @@ class Pagina1Page extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Pagina 1'),
       ),
-      body: const InformacionUsuario(),
+      body: StreamBuilder(
+        stream: usuarioService.usuarioStream,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return snapshot.hasData
+              ? InformacionUsuario(
+                  usuario: snapshot.data,
+                )
+              : const Center(
+                  child: Text(
+                    'No hay informacion del usuario',
+                  ),
+                );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, 'pagina2');
@@ -21,8 +38,10 @@ class Pagina1Page extends StatelessWidget {
 }
 
 class InformacionUsuario extends StatelessWidget {
+  final Usuario? usuario;
   const InformacionUsuario({
     Key? key,
+    this.usuario,
   }) : super(key: key);
 
   @override
@@ -33,29 +52,29 @@ class InformacionUsuario extends StatelessWidget {
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
+        children: [
+          const Text(
             'General',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            title: Text('Nombre: '),
+            title: Text('Nombre: ${usuario?.nombre}'),
           ),
           ListTile(
-            title: Text('Edad: '),
+            title: Text('Edad: ${usuario?.edad}'),
           ),
-          Text(
+          const Text(
             'Profesiones',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
             title: Text('Profesion 1: '),
           ),
